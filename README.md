@@ -2,6 +2,8 @@
 
 A goroutine-friendly combinatorics/functional library. It features methods like cartesian product for slices but by *generating* them on demand and channeling the results as you go.
 
+## ⚠️ Friendly Warning ⚠️
+This library is still WIP. It started as a side-quest for something I'm working on.
 
 # Example
 
