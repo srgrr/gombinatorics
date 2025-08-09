@@ -25,6 +25,24 @@ func TestCartesianProduct(t *testing.T) {
 				{"🐀", "🗑️"},
 			},
 		},
+		{
+			"Empty list left",
+			[]string{},
+			[]string{"🧀", "🗑️"},
+			[]Pair[string, string]{},
+		},
+		{
+			"Empty list right",
+			[]string{"🦝", "🐀"},
+			[]string{},
+			[]Pair[string, string]{},
+		},
+		{
+			"Empty lists",
+			[]string{},
+			[]string{},
+			[]Pair[string, string]{},
+		},
 	}
 
 	for _, tc := range tests {

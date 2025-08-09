@@ -1,4 +1,4 @@
-# Gombinatorics
+# Gombinatorics 🎲
 
 ## Basic Types
 ### Pair
