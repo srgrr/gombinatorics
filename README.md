@@ -35,3 +35,9 @@ Prints the following output
 
 Since `CartesianProduct` returns a channel, you can even process different pairs in different goroutines
 
+## Subsets
+
+TODO: EXPLAIN SUBSETS
+
+## Zip
+TODO: EXPLAIN ZIP
