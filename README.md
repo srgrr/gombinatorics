@@ -32,3 +32,6 @@ Prints the following output
 {🐀 0}
 {🐀 1}
 ```
+
+Since `CartesianProduct` returns a channel, you can even process different pairs in different goroutines
+
