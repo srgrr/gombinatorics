@@ -5,7 +5,7 @@ package functional
 // Zero and negative numbers are not accepted here
 func Partition[T any](A []T, k int) <-chan []T {
 	if k < 1 {
-		panic("%d is not a valid partition size (must be at least 1)")
+		panic("k must be at least 1")
 	}
 	ch := make(chan []T)
 	go func() {
