@@ -34,3 +34,14 @@ func Subsets[T any](A []T) <-chan []T {
 	}()
 	return ch
 }
+
+func Zip[P any, Q any](A []P, B []Q) <-chan Pair[P, Q] {
+	ch := make(chan Pair[P, Q])
+	go func() {
+		for i := 0; i < min(len(A), len(B)); i++ {
+			ch <- Pair[P, Q]{A[i], B[i]}
+		}
+		close(ch)
+	}()
+	return ch
+}

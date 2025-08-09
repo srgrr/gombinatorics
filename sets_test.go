@@ -76,3 +76,24 @@ func TestSubsets(t *testing.T) {
 		t.Errorf("%d %d", total, numSubsets)
 	}
 }
+
+func TestZip(t *testing.T) {
+	cities := []string{"london", "sf", "philly"}
+	weather := []string{"cloudy", "foggy", "crazy"}
+
+	zippedPairs := make([]Pair[string, string], 0)
+
+	for pair := range Zip(cities, weather) {
+		zippedPairs = append(zippedPairs, pair)
+	}
+
+	expected := []Pair[string, string]{
+		{"london", "cloudy"},
+		{"sf", "foggy"},
+		{"philly", "crazy"},
+	}
+
+	if !reflect.DeepEqual(expected, zippedPairs) {
+		t.Errorf("Error:\nGot\t%+v\nExpected\t%+v", zippedPairs, expected)
+	}
+}
