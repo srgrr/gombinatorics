@@ -1,11 +1,3 @@
-# Gombinatorics 🎲
-
-A goroutine-friendly combinatorics/functional library. It features methods like cartesian product for slices but by *generating* them on demand and channeling the results as you go.
-
-
-# Example
-
-```go
 package main
 
 import (
@@ -37,4 +29,3 @@ func main() {
 	}
 	wg.Wait()
 }
-```
