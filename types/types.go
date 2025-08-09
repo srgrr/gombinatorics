@@ -1,4 +1,4 @@
-package gombinatorics
+package types
 
 type Pair[P any, Q any] struct {
 	First  P
