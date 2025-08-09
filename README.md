@@ -5,6 +5,9 @@ A goroutine-friendly combinatorics/functional library. It features methods like 
 ## ⚠️ Friendly Warning ⚠️
 This library is still WIP. It started as a side-quest for something I'm working on.
 
+Immediate TODOs:
+- Add `IFunctions` accepting channels, so they can also take *generators*
+
 # Example
 
 ```go
