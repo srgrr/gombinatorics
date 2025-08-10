@@ -19,19 +19,3 @@ func CartesianProduct[P any, Q any](A []P, B []Q) <-chan types.Pair[P, Q] {
 	return ch
 }
 
-// Generates the cartesian product of two channels
-// Channels can be of different types
-// Pairs are wrapped in a types.Pair
-// Elements are paired following the given order in both arrays, from left to right
-func CCartesianProduct[P any, Q any](A chan P, B chan Q) <-chan types.Pair[P, Q] {
-	ch := make(chan types.Pair[P, Q])
-	go func() {
-		for a := range A {
-			for b := range B {
-				ch <- types.Pair[P, Q]{First: a, Second: b}
-			}
-		}
-		close(ch)
-	}()
-	return ch
-}
