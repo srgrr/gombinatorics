@@ -25,7 +25,7 @@ func Zip[P any, Q any](ctx context.Context, A []P, B []Q) <-chan types.Pair[P, Q
 	return ch
 }
 
-// Zips two channels and channels the corresponding pairs
+// CZip zips two channels and channels the corresponding pairs
 // Zip won't fail if A or B are of different sizes, it'll
 // just keep making pairs until one of the two sources runs
 // out of elements
@@ -33,19 +33,33 @@ func CZip[P any, Q any](ctx context.Context, A <-chan P, B <-chan Q) <-chan type
 	ch := make(chan types.Pair[P, Q])
 	go func() {
 		defer close(ch)
-		ok := true
-		for ok {
-			a, ok := <-A
+		for {
+			var a P
 			var b Q
-			if ok {
-				b, ok = <-B
-			}
-			if ok {
-				select {
-				case <-ctx.Done():
+			var okA, okB bool
+
+			select {
+			case <-ctx.Done():
+				return
+			case a, okA = <-A:
+				if !okA {
 					return
-				case ch <- types.Pair[P, Q]{First: a, Second: b}:
 				}
+			}
+
+			select {
+			case <-ctx.Done():
+				return
+			case b, okB = <-B:
+				if !okB {
+					return
+				}
+			}
+
+			select {
+			case <-ctx.Done():
+				return
+			case ch <- types.Pair[P, Q]{First: a, Second: b}:
 			}
 		}
 	}()
