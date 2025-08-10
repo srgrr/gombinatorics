@@ -9,24 +9,26 @@ Immediate TODOs:
 - Add `CFunctions` accepting channels, so they can also take *generators*
 
 # Example
-
+This example prints `hello world`.
 ```go
 package main
 
 import (
 	"fmt"
 
-	sets "github.com/srgrr/gombinatorics/sets"
+	f "github.com/srgrr/gombinatorics/functional"
+	t "github.com/srgrr/gombinatorics/types"
 )
 
 func main() {
-	emails := []string{"sergio@raccoon.me", "raquel@cat.me"}
-	spam := []string{"Raccoon plushies now 10% discount", "Brown hair dye now 5% discount"}
-	for emailAndSpam := range sets.CartesianProduct(emails, spam) {
-		fmt.Printf(
-			"%s got spammed with \"%s\"\n",
-			emailAndSpam.First, emailAndSpam.Second,
-		)
+	prefixes := []string{"hel", "wor"}
+	suffixes := []string{"lo", "ld"}
+	concat := func(p t.Pair[string, string]) string {
+		return p.First + p.Second
 	}
+	for word := range f.CMap(f.Zip(prefixes, suffixes), concat) {
+		fmt.Printf("%s ", word)
+	}
+	fmt.Println()
 }
 ```
