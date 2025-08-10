@@ -1,6 +1,7 @@
 package functional
 
 import (
+	"context"
 	"reflect"
 	"testing"
 
@@ -8,12 +9,13 @@ import (
 )
 
 func TestZip(t *testing.T) {
+	ctx := context.Background()
 	cities := []string{"london", "sf", "philly"}
 	weather := []string{"cloudy", "foggy", "crazy"}
 
 	zippedPairs := make([]types.Pair[string, string], 0)
 
-	for pair := range Zip(cities, weather) {
+	for pair := range Zip(ctx, cities, weather) {
 		zippedPairs = append(zippedPairs, pair)
 	}
 

@@ -1,6 +1,7 @@
 package sets
 
 import (
+	"context"
 	"reflect"
 	"testing"
 
@@ -15,6 +16,7 @@ type TestCase[P any, Q any] struct {
 }
 
 func TestCartesianProduct(t *testing.T) {
+	ctx := context.Background()
 	tests := []TestCase[string, string]{
 		{
 			"Raccoons and rats vs cheese and trash",
@@ -53,7 +55,7 @@ func TestCartesianProduct(t *testing.T) {
 			func(t *testing.T) {
 				prodLen := len(tc.A) * len(tc.B)
 				got := make([]types.Pair[string, string], 0, prodLen)
-				for obtainedPair := range CartesianProduct(tc.A, tc.B) {
+				for obtainedPair := range CartesianProduct(ctx, tc.A, tc.B) {
 					got = append(got, obtainedPair)
 				}
 				if !reflect.DeepEqual(got, tc.expected) {

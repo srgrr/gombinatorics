@@ -1,18 +1,26 @@
 package functional
 
-import types "github.com/srgrr/gombinatorics/types"
+import (
+	"context"
+
+	types "github.com/srgrr/gombinatorics/types"
+)
 
 // Zips two slices and channels the corresponding pairs
 // Zip won't fail if A or B are of different sizes, it'll
 // just keep making pairs until one of the two slices runs
 // out of elements
-func Zip[P any, Q any](A []P, B []Q) <-chan types.Pair[P, Q] {
+func Zip[P any, Q any](ctx context.Context, A []P, B []Q) <-chan types.Pair[P, Q] {
 	ch := make(chan types.Pair[P, Q])
 	go func() {
+		defer close(ch)
 		for i := 0; i < min(len(A), len(B)); i++ {
-			ch <- types.Pair[P, Q]{First: A[i], Second: B[i]}
+			select {
+			case <-ctx.Done():
+				return
+			case ch <- types.Pair[P, Q]{First: A[i], Second: B[i]}:
+			}
 		}
-		close(ch)
 	}()
 	return ch
 }
@@ -21,9 +29,10 @@ func Zip[P any, Q any](A []P, B []Q) <-chan types.Pair[P, Q] {
 // Zip won't fail if A or B are of different sizes, it'll
 // just keep making pairs until one of the two sources runs
 // out of elements
-func CZip[P any, Q any](A <-chan P, B <-chan Q) <-chan types.Pair[P, Q] {
+func CZip[P any, Q any](ctx context.Context, A <-chan P, B <-chan Q) <-chan types.Pair[P, Q] {
 	ch := make(chan types.Pair[P, Q])
 	go func() {
+		defer close(ch)
 		ok := true
 		for ok {
 			a, ok := <-A
@@ -32,10 +41,13 @@ func CZip[P any, Q any](A <-chan P, B <-chan Q) <-chan types.Pair[P, Q] {
 				b, ok = <-B
 			}
 			if ok {
-				ch <- types.Pair[P, Q]{First: a, Second: b}
+				select {
+				case <-ctx.Done():
+					return
+				case ch <- types.Pair[P, Q]{First: a, Second: b}:
+				}
 			}
 		}
-		close(ch)
 	}()
 	return ch
 }

@@ -1,23 +1,33 @@
 package functional
 
-func Map[S any, T any](A []S, f func(S) T) <-chan T {
+import "context"
+
+func Map[S any, T any](ctx context.Context, A []S, f func(S) T) <-chan T {
 	ch := make(chan T)
 	go func() {
+		defer close(ch)
 		for _, elem := range A {
-			ch <- f(elem)
+			select {
+			case <-ctx.Done():
+				return
+			case ch <- f(elem):
+			}
 		}
-		close(ch)
 	}()
 	return ch
 }
 
-func CMap[S any, T any](A <-chan S, f func(S) T) <-chan T {
+func CMap[S any, T any](ctx context.Context, A <-chan S, f func(S) T) <-chan T {
 	ch := make(chan T)
 	go func() {
+		defer close(ch)
 		for elem := range A {
-			ch <- f(elem)
+			select {
+			case <-ctx.Done():
+				return
+			case ch <- f(elem):
+			}
 		}
-		close(ch)
 	}()
 	return ch
 }

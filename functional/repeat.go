@@ -1,12 +1,18 @@
 package functional
 
-func Repeat[T any](elem T, k int) chan T {
+import "context"
+
+func Repeat[T any](ctx context.Context, elem T, k int) chan T {
 	ch := make(chan T)
 	go func() {
+		defer close(ch)
 		for i := 0; i < k; i++ {
-			ch <- elem
+			select {
+			case <-ctx.Done():
+				return
+			case ch <- elem:
+			}
 		}
-		close(ch)
 	}()
 	return ch
 }

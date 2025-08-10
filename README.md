@@ -14,6 +14,7 @@ This example prints `hello world`.
 package main
 
 import (
+	"context"
 	"fmt"
 
 	f "github.com/srgrr/gombinatorics/functional"
@@ -21,12 +22,13 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
 	prefixes := []string{"hel", "wor"}
 	suffixes := []string{"lo", "ld"}
 	concat := func(p t.Pair[string, string]) string {
 		return p.First + p.Second
 	}
-	for word := range f.CMap(f.Zip(prefixes, suffixes), concat) {
+	for word := range f.CMap(ctx, f.Zip(ctx, prefixes, suffixes), concat) {
 		fmt.Printf("%s ", word)
 	}
 	fmt.Println()

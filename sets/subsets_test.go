@@ -1,12 +1,16 @@
 package sets
 
-import "testing"
+import (
+	"context"
+	"testing"
+)
 
 func TestSubsets(t *testing.T) {
+	ctx := context.Background()
 	nums := []int{1, 2, 4, 8}
 	total := 0
 	numSubsets := 0
-	for subset := range Subsets(nums) {
+	for subset := range Subsets(ctx, nums) {
 		numSubsets++
 		for _, elem := range subset {
 			total += elem
@@ -18,10 +22,11 @@ func TestSubsets(t *testing.T) {
 }
 
 func TestSubsetsOfFixedSize(t *testing.T) {
+	ctx := context.Background()
 	nums := []int{1, 2, 4, 8}
 	total := 0
 	numSubsets := 0
-	for subset := range SubsetsOfFixedSize(nums, 2) {
+	for subset := range SubsetsOfFixedSize(ctx, nums, 2) {
 		numSubsets++
 		for _, elem := range subset {
 			total += elem
