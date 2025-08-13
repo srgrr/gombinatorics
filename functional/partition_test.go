@@ -14,10 +14,10 @@ func TestPartition(t *testing.T) {
 		received = append(received, partition)
 	}
 	expected := [][]string{
-		[]string{"the", "quick"},
-		[]string{"brown", "fox"},
-		[]string{"jumps", "over"},
-		[]string{"the"},
+		{"the", "quick"},
+		{"brown", "fox"},
+		{"jumps", "over"},
+		{"the"},
 	}
 	if !reflect.DeepEqual(expected, received) {
 		t.Errorf("Expected %s\nReceived %s", expected, received)
