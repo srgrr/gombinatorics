@@ -7,11 +7,37 @@ A goroutine-friendly combinatorics/functional library. It features methods like 
 ## ⚠️ Friendly Warning ⚠️
 This library is still WIP. It started as a side-quest for something I'm working on.
 
-Immediate TODOs:
-- Add `CFunctions` accepting channels, so they can also take *generators*
+I'll keep adding samples, configurations and support as time goes by.
 
-# Example
-This example prints `hello world`.
+# Functional example
+The library allows you to turn code like this
+```go
+func main() {
+	// 1. Create a slice of numbers from 1 to 10
+	numbers := make([]int, 10)
+	for i := 1; i <= 10; i++ {
+		numbers[i-1] = i
+	}
+	// 2. Filter even numbers
+	evenNumbers := make([]int, 0)
+	for _, n := range numbers {
+		if n%2 == 0 {
+			evenNumbers = append(evenNumbers, n)
+		}
+	}
+	// 3. Map the even numbers to their squares
+	squaredEvenNumbers := make([]int, len(evenNumbers))
+	for i, n := range evenNumbers {
+		squaredEvenNumbers[i] = n * n
+	}
+	for _, n := range squaredEvenNumbers {
+		println(n)
+	}
+}
+```
+
+Into code like this
+
 ```go
 package main
 
@@ -20,19 +46,24 @@ import (
 	"fmt"
 
 	f "github.com/srgrr/gombinatorics/functional"
-	t "github.com/srgrr/gombinatorics/types"
 )
 
 func main() {
 	ctx := context.Background()
-	prefixes := []string{"hel", "wor"}
-	suffixes := []string{"lo", "ld"}
-	concat := func(p t.Pair[string, string]) string {
-		return p.First + p.Second
+	evenSquaredNumbers :=
+		f.CMap( // 3. Map the even numbers to their squares
+			ctx,
+			f.CFilter( // 2. Filter even numbers from the channel
+				ctx,
+				f.Range(ctx, 1, 11), // 1. Channel numbers from 1 to 10
+				func(n int) bool { return n%2 == 0 },
+			),
+			func(n int) int { return n * n },
+		)
+	for n := range evenSquaredNumbers {
+		fmt.Println(n)
 	}
-	for word := range f.CMap(ctx, f.Zip(ctx, prefixes, suffixes), concat) {
-		fmt.Printf("%s ", word)
-	}
-	fmt.Println()
 }
 ```
+
+Functions starting with `C` **channel** their results. That is, this second sample computes elements **on demand** instead of computing whole lists.
