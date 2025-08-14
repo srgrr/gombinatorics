@@ -10,7 +10,7 @@ This library is still WIP. It started as a side-quest for something I'm working 
 I'll keep adding samples, configurations and support as time goes by.
 
 # Functional example
-The library allows you to turn code like this
+The library allows you to turn memory-heave, single threaded code like this
 ```go
 func main() {
 	// 1. Create a slice of numbers from 1 to 10
@@ -36,7 +36,7 @@ func main() {
 }
 ```
 
-Into code like this
+Into lightweight, *on-demand* code like this
 
 ```go
 package main
