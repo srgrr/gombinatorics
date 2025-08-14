@@ -10,7 +10,7 @@ This library is still WIP. It started as a side-quest for something I'm working 
 I'll keep adding samples, configurations and support as time goes by.
 
 # Functional example
-The library allows you to turn memory-heave, single threaded code like this
+The library allows you to turn memory-heavy, single threaded code like this
 ```go
 func main() {
 	// 1. Create a slice of numbers from 1 to 10
@@ -67,3 +67,4 @@ func main() {
 ```
 
 Functions starting with `C` **channel** their results. That is, this second sample computes elements **on demand** instead of computing whole lists.
+Furthermore, `evenSquaredNumbers` can be consumed by different goroutines at the same time!
