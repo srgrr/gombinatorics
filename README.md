@@ -1,4 +1,4 @@
-# Gombinatorics 🎲
+# Gombinatorics 🎲 & 🐑 (da)
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/srgrr/gombinatorics)](https://goreportcard.com/report/github.com/srgrr/gombinatorics)
 
