@@ -15,87 +15,46 @@ package functional // import "github.com/srgrr/gombinatorics/functional"
 
 FUNCTIONS
 
-**func CFilter[T any](ctx context.Context, A <-chan T, criterion func(T) bool) <-chan T**
-```go
-CFilter channels elements from a read-only channel that satisfy a given
-```
-```go
-criterion
-```
+func CFilter[T any](ctx context.Context, A <-chan T, criterion func(T) bool) <-chan T
+    CFilter channels elements from a read-only channel that satisfy a given
+    criterion
 
-**func CMap[S any, T any](ctx context.Context, A <-chan S, f func(S) T) <-chan T**
-```go
-CMap applies a function to a given read-only channel and channels the
-```
-```go
-results
-```
+func CMap[S any, T any](ctx context.Context, A <-chan S, f func(S) T) <-chan T
+    CMap applies a function to a given read-only channel and channels the
+    results
 
-**func CPartition[T any](ctx context.Context, A <-chan T, k int) <-chan []T**
-```go
-CPartition channels consecutive slices of size k from a read-only channel
-```
-```go
-except for maybe the last, which can be of size n % k Zero and negative
-```
-```go
-numbers are not accepted here It is similar to Partition but works with
-```
-```go
-channels instead of arrays
-```
+func CPartition[T any](ctx context.Context, A <-chan T, k int) <-chan []T
+    CPartition channels consecutive slices of size k from a read-only channel
+    except for maybe the last, which can be of size n % k Zero and negative
+    numbers are not accepted here It is similar to Partition but works with
+    channels instead of arrays
 
-**func CZip[P any, Q any](ctx context.Context, A <-chan P, B <-chan Q) <-chan types.Pair[P, Q]**
-```go
-CZip zips two channels and channels the corresponding pairs Zip won't fail
-```
-```go
-if A or B are of different sizes, it'll just keep making pairs until one of
-```
-```go
-the two sources runs out of elements
-```
+func CZip[P any, Q any](ctx context.Context, A <-chan P, B <-chan Q) <-chan types.Pair[P, Q]
+    CZip zips two channels and channels the corresponding pairs Zip won't fail
+    if A or B are of different sizes, it'll just keep making pairs until one of
+    the two sources runs out of elements
 
-**func Filter[T any](ctx context.Context, A []T, criterion func(T) bool) <-chan T**
-```go
-Filter channels elements from a slice that satisfy a given criterion
-```
+func Filter[T any](ctx context.Context, A []T, criterion func(T) bool) <-chan T
+    Filter channels elements from a slice that satisfy a given criterion
 
-**func Map[S any, T any](ctx context.Context, A []S, f func(S) T) <-chan T**
-```go
-Map applies a given function to a given array and channels the elements
-```
+func Map[S any, T any](ctx context.Context, A []S, f func(S) T) <-chan T
+    Map applies a given function to a given array and channels the elements
 
-**func Partition[T any](ctx context.Context, A []T, k int) <-chan []T**
-```go
-Partition channels consecutive array slices of size k except for maybe the
-```
-```go
-last, which can be of size n % k Zero and negative numbers are not accepted
-```
-```go
-here
-```
+func Partition[T any](ctx context.Context, A []T, k int) <-chan []T
+    Partition channels consecutive array slices of size k except for maybe the
+    last, which can be of size n % k Zero and negative numbers are not accepted
+    here
 
-**func Range(ctx context.Context, l, r int) <-chan int**
-```go
-Range channels integers in [l, r), excluding r It is similar to the built-in
-```
-```go
-range function but works with channels
-```
+func Range(ctx context.Context, l, r int) <-chan int
+    Range channels integers in [l, r), excluding r It is similar to the built-in
+    range function but works with channels
 
-**func Repeat[T any](ctx context.Context, elem T, k int) chan T**
-**func Zip[P any, Q any](ctx context.Context, A []P, B []Q) <-chan types.Pair[P, Q]**
-```go
-Zips two slices and channels the corresponding pairs Zip won't fail if A or
-```
-```go
-B are of different sizes, it'll just keep making pairs until one of the two
-```
-```go
-slices runs out of elements
-```
+func Repeat[T any](ctx context.Context, elem T, k int) chan T
+func Zip[P any, Q any](ctx context.Context, A []P, B []Q) <-chan types.Pair[P, Q]
+    Zips two slices and channels the corresponding pairs Zip won't fail if A or
+    B are of different sizes, it'll just keep making pairs until one of the two
+    slices runs out of elements
+
 
 ```
 ### Sets
@@ -106,26 +65,17 @@ package sets // import "github.com/srgrr/gombinatorics/sets"
 
 FUNCTIONS
 
-**func CartesianProduct[P any, Q any](ctx context.Context, A []P, B []Q) <-chan types.Pair[P, Q]**
-```go
-Generates the cartesian product of two slices Slices can be of different
-```
-```go
-types Pairs are wrapped in a types.Pair Elements are paired following the
-```
-```go
-given order in both arrays, from left to right
-```
+func CartesianProduct[P any, Q any](ctx context.Context, A []P, B []Q) <-chan types.Pair[P, Q]
+    Generates the cartesian product of two slices Slices can be of different
+    types Pairs are wrapped in a types.Pair Elements are paired following the
+    given order in both arrays, from left to right
 
-**func Subsets[T any](ctx context.Context, A []T) <-chan []T**
-```go
-Returns all the subsets Elements are included (excluded) in the given order
-```
+func Subsets[T any](ctx context.Context, A []T) <-chan []T
+    Returns all the subsets Elements are included (excluded) in the given order
 
-**func SubsetsOfFixedSize[T any](ctx context.Context, A []T, k int) <-chan []T**
-```go
-Returns all the subsets whose size is exactly k
-```
+func SubsetsOfFixedSize[T any](ctx context.Context, A []T, k int) <-chan []T
+    Returns all the subsets whose size is exactly k
+
 
 ```
 
