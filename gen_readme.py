@@ -7,6 +7,7 @@ def _replace_section(contents, section_name, package_name):
     section_content = subprocess.check_output(
         ['go', 'doc', '-all', package_name]
     ).decode("utf-8")
+    section_content = _markdownize(section_content)
     return contents.replace(f'$${section_name}$$', section_content)
 
 
