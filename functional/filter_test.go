@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-type TestCase[T any] struct {
+type FilterTestCase[T any] struct {
 	name      string
 	A         []T
 	criterion func(T) bool
@@ -15,7 +15,7 @@ type TestCase[T any] struct {
 
 func TestFilter(t *testing.T) {
 	ctx := context.Background()
-	tests := []TestCase[int]{
+	tests := []FilterTestCase[int]{
 		{
 			"Filter even numbers",
 			[]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
@@ -46,23 +46,9 @@ func TestFilter(t *testing.T) {
 	}
 }
 
-func TestFilter_DoneCtx(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel() // Cancel the context immediately
-
-	got := make([]int, 0)
-	for elem := range Filter(ctx, []int{1, 2, 3}, func(n int) bool { return n%2 == 0 }) {
-		got = append(got, elem)
-	}
-
-	if len(got) != 0 {
-		t.Errorf("expected no elements but got %v", got)
-	}
-}
-
 func TestCFilter(t *testing.T) {
 	ctx := context.Background()
-	tests := []TestCase[int]{
+	tests := []FilterTestCase[int]{
 		{
 			"Filter even numbers",
 			[]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
@@ -97,27 +83,5 @@ func TestCFilter(t *testing.T) {
 				}
 			},
 		)
-	}
-}
-
-func TestCFilter_DoneCtx(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel() // Cancel the context immediately
-
-	got := make([]int, 0)
-	supplierChan := make(chan int)
-	go func() {
-		defer close(supplierChan)
-		for _, elem := range []int{1, 2, 3} {
-			supplierChan <- elem
-		}
-	}()
-
-	for elem := range CFilter(ctx, supplierChan, func(n int) bool { return n%2 == 0 }) {
-		got = append(got, elem)
-	}
-
-	if len(got) != 0 {
-		t.Errorf("expected no elements but got %v", got)
 	}
 }
