@@ -1,17 +1,13 @@
-# Gombinatorics 🎲 & 🐑 (da)
+# Gombinator
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/srgrr/gombinatorics)](https://goreportcard.com/report/github.com/srgrr/gombinatorics)
 
-A goroutine-friendly combinatorics/functional library. It features methods like cartesian product for slices but by *generating* them on demand and channeling the results as you go.
+A goroutine-friendly functional library. It features methods like cartesian product for slices but by *generating* them on demand and channeling the results as you go.
 
 ## Quick Overview
-### Functional
-`functional` provides the most usual functional programming patterns but adapted to channels. That is, they're designed to **channel** the results instead of accumulating them and returning whole computed collections. The advantages of this are twofold: all elements are computed on demand and can be consumed by different goroutines with no concurrency issues.
+`gombinator` provides the most usual functional programming patterns but adapted to channels. That is, they're designed to **channel** the results instead of accumulating them and returning whole computed collections. The advantages of this are twofold: all elements are computed on demand and can be consumed by different goroutines with no concurrency issues.
 
-## Combinatorics
-TODO (weird, I know)
-
-# Functional example
+# Quick Example
 The library allows you to turn memory-heavy, single threaded code like this
 ```go
 func main() {
@@ -47,17 +43,17 @@ import (
 	"context"
 	"fmt"
 
-	f "github.com/srgrr/gombinatorics/functional"
+	g "github.com/srgrr/gombinator"
 )
 
 func main() {
 	ctx := context.Background()
 	evenSquaredNumbers :=
-		f.CMap( // 3. Map the even numbers to their squares
+		g.CMap( // 3. Map the even numbers to their squares
 			ctx,
-			f.CFilter( // 2. Filter even numbers from the channel
+			g.CFilter( // 2. Filter even numbers from the channel
 				ctx,
-				f.Range(ctx, 1, 11), // 1. Channel numbers from 1 to 10
+				g.Range(ctx, 1, 11), // 1. Channel numbers from 1 to 10
 				func(n int) bool { return n%2 == 0 },
 			),
 			func(n int) int { return n * n },
