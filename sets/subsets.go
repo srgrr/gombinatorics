@@ -2,6 +2,7 @@ package sets
 
 import "context"
 
+// Subsets generates all subsets of a given slice A
 // Returns all the subsets
 // Elements are included (excluded) in the given order
 func Subsets[T any](ctx context.Context, A []T) <-chan []T {
@@ -14,6 +15,7 @@ func Subsets[T any](ctx context.Context, A []T) <-chan []T {
 	return ch
 }
 
+// SubsetsOfFixedSize generates all subsets of a given slice A
 // Returns all the subsets whose size is exactly k
 func SubsetsOfFixedSize[T any](ctx context.Context, A []T, k int) <-chan []T {
 	ch := make(chan []T)
