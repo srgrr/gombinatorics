@@ -39,6 +39,8 @@ func main() {
 
 ## Some Notions
 
+All functions require the user to provide a `context.Context` object. This allows the library to safely cancel results streaming prematurely.
+
 There are two kinds of functions: normal functions and Cfunctions. Both **channel** their results and compute stuff **lazily**.
 
 Cfunctions also work with **channels**. As you've seen in the sample, this means that you can chain different functions to perform complex lazy computations.
