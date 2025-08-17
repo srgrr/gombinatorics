@@ -18,6 +18,9 @@ func Subsets[T any](ctx context.Context, A []T) <-chan []T {
 // SubsetsOfFixedSize generates all subsets of a given slice A
 // Returns all the subsets whose size is exactly k
 func SubsetsOfFixedSize[T any](ctx context.Context, A []T, k int) <-chan []T {
+	if k < 0 {
+		panic("k must be at least 0")
+	}
 	ch := make(chan []T)
 	go func() {
 		defer close(ch)
