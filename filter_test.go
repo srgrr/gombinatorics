@@ -104,7 +104,7 @@ func TestCFilter(t *testing.T) {
 func TestCFilter_CancelCtx(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
-	cancel()
+	defer cancel()
 
 	got := make([]int, 0)
 	supplierChan := make(chan int)
@@ -116,10 +116,11 @@ func TestCFilter_CancelCtx(t *testing.T) {
 	}()
 
 	for elem := range CFilter(ctx, supplierChan, func(n int) bool { return n%2 == 0 }) {
+		cancel()
 		got = append(got, elem)
 	}
 
-	if len(got) != 0 {
-		t.Errorf("Expected no elements due to cancellation, got %v", got)
+	if len(got) != 1 {
+		t.Errorf("Expected one element due to cancellation, got %v", got)
 	}
 }
