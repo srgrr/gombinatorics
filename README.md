@@ -1,8 +1,8 @@
-# Gombinator v1.0.1
+# Gombinator v1.0.2
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/srgrr/gombinatorics)](https://goreportcard.com/report/github.com/srgrr/gombinatorics)
 
-A goroutine-friendly functional library. It features functional methods but by *generating* them on demand and channeling the results as you go.
+A goroutine-friendly functional library. It features methods like cartesian product for slices but by *generating* them on demand and channeling the results as you go.
 
 # Quick Example
 
