@@ -77,6 +77,7 @@ The library does **more** than just declaring stuff: it opens actual channels an
 
 This means two things:
 
-    - Declaring stuff **does** add overhead, and so does using channels in general. This lib is meant to ease writing pipelines meant to be consumed by multiple goroutines, not to write fancy pythonic oneliners
-    - You're responsible of avoiding deadlocks. You still gotta manage context cancelling and channel consumption accordingly
+- Declaring stuff **does** add overhead, and so does using channels in general. This lib is meant to ease writing pipelines meant to be consumed by multiple goroutines, not to write fancy pythonic oneliners
+
+- You're responsible of avoiding deadlocks. You still gotta manage context cancelling and channel consumption accordingly
 
