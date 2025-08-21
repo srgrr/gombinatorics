@@ -81,6 +81,14 @@ func main() {
 
 ```
 
+# Important Caveats
+
+The library does **more** than just declare stuff: it opens actual channels and leaves them blocked waiting for someone to read from them.
+
+This means two things:
+    - Declaring stuff **does** add overhead
+    - You're responsible of avoiding deadlocks accordingly
+
 ## Some Notions
 
 All functions require the user to provide a `context.Context` object. This allows the library to safely cancel results streaming prematurely.
