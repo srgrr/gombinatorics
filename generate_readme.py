@@ -3,7 +3,7 @@ import subprocess
 
 README_TEMPLATE = "README_template.md"
 SAMPLE_FILE = "examples/range_filter_map/range_filter_map.go"
-DECLARATIVE_FILE = "examples/declarative_example/declarative.go"
+DECLARATIVE_FILE = "examples/declarative_example/declarative_abbr.txt"
 README_FILE = "README.md"
 VERSION_TAG = "<<VERSION>>"
 SAMPLE_TAG = "<<SAMPLE>>"

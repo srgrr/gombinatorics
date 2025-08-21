@@ -4,6 +4,15 @@
 
 A goroutine-friendly functional library. It features methods like `map`, `filter`, etc for slices and channels but by *generating* the results on demand.
 
+# How to use it
+```
+go get github.com/srgrr/gombinator
+```
+
+```go
+import g "github.com/srgrr/gombinator"
+```
+
 # Quick Example
 
 This code gets the first 10 natural numbers, filters the even numbers and computes their squares
@@ -20,7 +29,7 @@ You can declare *what* you're intending to do and do it afterwards
 <<DECLARATIVE>>
 ```
 
-# Important Caveats
+# Things to Watch Out For
 
 The library does **more** than just declare stuff: it opens actual channels and leaves them blocked waiting for someone to read from them.
 
