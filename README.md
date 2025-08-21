@@ -81,3 +81,20 @@ This means two things:
 
 - You're responsible of avoiding deadlocks. You still gotta manage context cancelling and channel consumption accordingly
 
+# Performance
+
+As we mentioned before, `gombinator` does take a toll on performance due to the heavy use of channels. You can check it out by yourself by running `benchmark_test.go`. Here are some results:
+
+```
+goos: darwin
+goarch: arm64
+pkg: github.com/srgrr/gombinator
+cpu: Apple M4
+BenchmarkRangeMapFilter_Gombinator-10                  1        3336092875 ns/op           0.00 MB/s        7504 B/op        19 allocs/op
+BenchmarkRangeMapFilter_Vanilla-10                     1        2880468584 ns/op           0.00 MB/s         432 B/op         6 allocs/op
+Benchmark_Sequential-10                              361           3300154 ns/op           0.00 MB/s           0 B/op         0 allocs/op
+```
+
+Both `-Gombinator` and `-Vanilla` use channels. The later implements the same channel-based approach as `gombinator` (and they all implement the same example where we generate some numbers, filter the even ones and compute their squares afterwards). `-Sequential` implements the same thing but running a full sequential loop.
+
+This benchmark wants to serve two purposes: make the user aware of the tradeoff between relying on `gombinator` and writing everything by yourself and how `gombinator` is **NOT** meant to be a substitute of more imperative, traditional approaches for tasks that do not require goroutines in the first place.
