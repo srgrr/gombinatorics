@@ -1,8 +1,17 @@
-# Gombinator v1.0.2
+# Gombinator v1.0.3
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/srgrr/gombinator)](https://goreportcard.com/report/github.com/srgrr/gombinator)
 
 A goroutine-friendly functional library. It features methods like `map`, `filter`, etc for slices and channels but by *generating* the results on demand.
+
+# How to use it
+```
+go get github.com/srgrr/gombinator
+```
+
+```go
+import g "github.com/srgrr/gombinator"
+```
 
 # Quick Example
 
@@ -40,48 +49,20 @@ func main() {
 You can declare *what* you're intending to do and do it afterwards
 
 ```go
-package main
+// Find the whole example in examples/declarative_example
+data := []string{"hello", "world"}
 
-import (
-	"context"
-	"fmt"
-	"sync"
+// Declare channeling functions
+lenChan := g.Map(ctx, data, func(s string) int { return len(s) })
+filterChan := g.Filter(ctx, data, func(s string) bool { return s == "hello" })
 
-	g "github.com/srgrr/gombinator"
-)
-
-func lenTask(wg *sync.WaitGroup, numChan <-chan int) {
-	defer wg.Done()
-	for numVal := range numChan {
-		fmt.Println(numVal)
-	}
-}
-
-func helloTask(wg *sync.WaitGroup, stringChan <-chan string) {
-	defer wg.Done()
-	for stringVal := range stringChan {
-		fmt.Println(stringVal)
-	}
-}
-
-func main() {
-	ctx := context.Background()
-	data := []string{"hello", "world"}
-	// Declare channeling functions
-	lenChan := g.Map(ctx, data, func(s string) int { return len(s) })
-	filterChan := g.Filter(ctx, data, func(s string) bool { return s == "hello" })
-
-	// Run them!
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go lenTask(&wg, lenChan)
-	go helloTask(&wg, filterChan)
-	wg.Wait()
-}
+// Run them!
+go lenTask(lenChan)
+go helloTask(filterChan)
 
 ```
 
-# Important Caveats
+# Things to Watch Out For
 
 The library does **more** than just declare stuff: it opens actual channels and leaves them blocked waiting for someone to read from them.
 
