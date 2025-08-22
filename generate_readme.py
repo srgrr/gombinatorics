@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 README_TEMPLATE = "README_template.md"
 SAMPLE_FILE = "examples/range_filter_map/range_filter_map.go"
@@ -9,10 +10,7 @@ VERSION_TAG = "<<VERSION>>"
 SAMPLE_TAG = "<<SAMPLE>>"
 DECLARATIVE_TAG = "<<DECLARATIVE>>"
 
-CURRENT_VERSION = \
-    subprocess.check_output(
-        ["git", "describe", "--tags", "--abbrev=0"]
-        ).strip().decode("utf-8").replace("\n", "").strip()
+CURRENT_VERSION = sys.argv[1]
 
 
 with open(README_TEMPLATE, 'r') as template_file:

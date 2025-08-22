@@ -24,7 +24,7 @@ jobs:
           python-version: '3.10'
 
       - name: Run README generator script
-        run: python generate_readme.py
+        run: python generate_readme.py ${{ github.event.inputs.VERSION }}
 
       - name: Commit updated README
         run: |
