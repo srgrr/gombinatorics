@@ -1,4 +1,4 @@
-# Gombinator v1.0.3
+# Gombinator v1.0.5
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/srgrr/gombinator)](https://goreportcard.com/report/github.com/srgrr/gombinator)
 
