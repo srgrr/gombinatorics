@@ -1,6 +1,11 @@
 package gombinator
 
-import "context"
+import (
+	"context"
+	"errors"
+)
+
+var ErrInvalidRepeatKValue = errors.New("k must be -1 for infinite repetition, 0 for empty channel, or a positive integer")
 
 // Repeat channels the same element k times
 // It is similar to the built-in repeat function but works with channels
@@ -9,9 +14,9 @@ import "context"
 // If k is positive, it repeats exactly k times
 // Other values of k are not accepted
 // It is similar to the built-in repeat function but works with channels
-func Repeat[T any](ctx context.Context, elem T, k int) chan T {
+func Repeat[T any](ctx context.Context, elem T, k int) (<-chan T, error) {
 	if k < -1 {
-		panic("k must be -1 for infinite repetition, 0 for empty channel, or a positive integer")
+		return nil, ErrInvalidRepeatKValue
 	}
 	ch := make(chan T)
 	go func() {
@@ -24,5 +29,5 @@ func Repeat[T any](ctx context.Context, elem T, k int) chan T {
 			}
 		}
 	}()
-	return ch
+	return ch, nil
 }

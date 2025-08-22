@@ -1,13 +1,19 @@
 package gombinator
 
-import "context"
+import (
+	"context"
+	"errors"
+)
+
+var ErrInvalidPartitionKValue = errors.New("k must be at least 1")
 
 // Partition channels consecutive array slices of size k
 // except for maybe the last, which can be of size n % k
 // Zero and negative numbers are not accepted here
-func Partition[T any](ctx context.Context, A []T, k int) <-chan []T {
+// Returns ErrInvalidKValue if k is not at least 1
+func Partition[T any](ctx context.Context, A []T, k int) (<-chan []T, error) {
 	if k < 1 {
-		panic("k must be at least 1")
+		return nil, ErrInvalidPartitionKValue
 	}
 	ch := make(chan []T)
 	go func() {
@@ -20,16 +26,17 @@ func Partition[T any](ctx context.Context, A []T, k int) <-chan []T {
 			}
 		}
 	}()
-	return ch
+	return ch, nil
 }
 
 // CPartition channels consecutive slices of size k from a read-only channel
 // except for maybe the last, which can be of size n % k
 // Zero and negative numbers are not accepted here
 // It is similar to Partition but works with channels instead of arrays
-func CPartition[T any](ctx context.Context, A <-chan T, k int) <-chan []T {
+// Returns ErrInvalidKValue if k is not at least 1
+func CPartition[T any](ctx context.Context, A <-chan T, k int) (<-chan []T, error) {
 	if k < 1 {
-		panic("k must be at least 1")
+		return nil, ErrInvalidPartitionKValue
 	}
 	ch := make(chan []T)
 	go func() {
@@ -51,5 +58,5 @@ func CPartition[T any](ctx context.Context, A <-chan T, k int) <-chan []T {
 			ch <- batch
 		}
 	}()
-	return ch
+	return ch, nil
 }
