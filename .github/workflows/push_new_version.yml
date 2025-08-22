@@ -1,9 +1,12 @@
-name: Update README
+name: Push New Version
 
 on:
-  push:
-    tags:
-      - '*'
+  workflow_dispatch:
+    inputs:
+      VERSION:
+        description: "Version tag to use (e.g., v1.2.3)"
+        required: true
+        type: string
 
 jobs:
   update-readme:
@@ -29,8 +32,10 @@ jobs:
           git config user.email "github-actions@github.com"
           if ! git diff --quiet; then
             git add README.md
-            git commit -m "Update README [skip ci]"
-            git push
+            git commit -m "${{ github.event.inputs.VERSION }}"
+            git tag ${{ github.event.inputs.VERSION }}
+            git push origin HEAD
+            git push origin ${{ github.event.inputs.VERSION }}
           else
             echo "No changes to commit"
           fi
