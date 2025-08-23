@@ -27,6 +27,33 @@ func TestPartition(t *testing.T) {
 	}
 }
 
+type PartitionWrongKValuesTestCase struct {
+	name string
+	k    int
+}
+
+func TestPartition_WrongKValues(t *testing.T) {
+	ctx := context.Background()
+	testCases := []PartitionWrongKValuesTestCase{
+		{"k = 0", 0},
+		{"k = -1", -1},
+		{"k = -999", -999},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(
+			testCase.name,
+			func(t *testing.T) {
+				strings := []string{"the", "quick", "brown", "fox", "jumps", "over", "the"}
+				_, err := Partition(ctx, strings, testCase.k)
+				if err == nil || err != ErrInvalidPartitionKValue {
+					t.Errorf("Expected ErrInvalidPartitionKValue, received %+v instead", err)
+				}
+			},
+		)
+	}
+}
+
 func TestCPartition(t *testing.T) {
 	ctx := context.Background()
 	strings := []string{"the", "quick", "brown", "fox", "jumps", "over", "the"}
@@ -54,5 +81,28 @@ func TestCPartition(t *testing.T) {
 	}
 	if !reflect.DeepEqual(expected, received) {
 		t.Errorf("Expected %s\nReceived %s", expected, received)
+	}
+}
+
+func TestCPartition_WrongKValues(t *testing.T) {
+	ctx := context.Background()
+	testCases := []PartitionWrongKValuesTestCase{
+		{"k = 0", 0},
+		{"k = -1", -1},
+		{"k = -999", -999},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(
+			testCase.name,
+			func(t *testing.T) {
+				ch := make(chan string)
+				defer close(ch)
+				_, err := CPartition(ctx, ch, testCase.k)
+				if err == nil || err != ErrInvalidPartitionKValue {
+					t.Errorf("Expected ErrInvalidPartitionKValue, received %+v instead", err)
+				}
+			},
+		)
 	}
 }
