@@ -5,9 +5,9 @@
 
 ```go
 evenSquaredNumbers :=
-    g.CMap(ctx, // 3. Map the even numbers to their squares
-        g.CFilter(ctx, // 2. Filter even numbers from the channel
-            g.Range(ctx, 1, 11), // 1. Channel numbers from 1 to 10
+    CMap(ctx,
+        CFilter(ctx,
+            Range(ctx, 1, 11),
             func(n int) bool { return n%2 == 0 },
         ),
         func(n int) int { return n * n },
