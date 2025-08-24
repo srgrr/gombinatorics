@@ -86,6 +86,78 @@ func BenchmarkRangeMapFilter_Vanilla(b *testing.B) {
 	}
 }
 
+func getRangeChanCtx(ctx context.Context, l, r int) <-chan int {
+	ch := make(chan int, 64)
+	go func() {
+		defer close(ch)
+		for i := l; i < r; i++ {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				ch <- i
+			}
+		}
+	}()
+	return ch
+}
+
+func getMapChanCtx(ctx context.Context, inputChan <-chan int, f func(n int) int) <-chan int {
+	ch := make(chan int, 64)
+	go func() {
+		defer close(ch)
+		for elem := range inputChan {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				ch <- f(elem)
+			}
+		}
+	}()
+	return ch
+}
+
+func getFilterChanCtx(ctx context.Context, inputChan <-chan int, f func(n int) bool) <-chan int {
+	ch := make(chan int, 64)
+	go func() {
+		defer close(ch)
+		for elem := range inputChan {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				if f(elem) {
+					ch <- elem
+				}
+			}
+		}
+	}()
+	return ch
+}
+
+func BenchmarkRangeMapFilter_VanillaContext(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(1)
+	ctx := context.Background()
+	for n := 0; n < b.N; n++ {
+		var total int = 0
+		squaredEvenNumbers :=
+			getMapChanCtx(ctx,
+				getFilterChanCtx(ctx,
+					getRangeChanCtx(ctx, 0, LIMIT),
+					func(n int) bool { return n%2 == 0 },
+				),
+				func(n int) int { return n * n },
+			)
+		// Consume the channel for benchmarking
+		for elem := range squaredEvenNumbers {
+			total = (total + elem) % MOD
+		}
+		_ = total
+	}
+}
+
 func Benchmark_Sequential(b *testing.B) {
 	b.ReportAllocs()
 	b.SetBytes(1)
