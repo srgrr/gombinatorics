@@ -5,10 +5,12 @@ import sys
 README_TEMPLATE = "README_template.md"
 SAMPLE_FILE = "examples/range_filter_map/range_filter_map.go"
 DECLARATIVE_FILE = "examples/declarative_example/declarative_abbr.txt"
+FLASHY_FILE = "examples/range_filter_map/flashy.txt"
 README_FILE = "README.md"
 VERSION_TAG = "<<VERSION>>"
 SAMPLE_TAG = "<<SAMPLE>>"
 DECLARATIVE_TAG = "<<DECLARATIVE>>"
+FLASHY_TAG = "<<FLASHY>>"
 
 CURRENT_VERSION = sys.argv[1]
 

@@ -3,16 +3,18 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/srgrr/gombinator)](https://goreportcard.com/report/github.com/srgrr/gombinator) [![Go Reference](https://pkg.go.dev/badge/github.com/srgrr/gombinator.svg)](https://pkg.go.dev/github.com/srgrr/gombinator) ![License](https://img.shields.io/github/license/srgrr/gombinator)
 
 
-
+```go
+<<FLASHY_SAMPLE>>
+```
 
 A goroutine-friendly functional library. It features methods like `map`, `filter`, etc for slices and channels but by *generating* the results on demand.
 
 # How to use it
-This library can be installed and imported as a dependency by doing the usually `go get` stuff...
+## Installation
 ```
 go get github.com/srgrr/gombinator
 ```
-... and import it the same way
+## Importing gombinator
 ```go
 import g "github.com/srgrr/gombinator"
 ```
