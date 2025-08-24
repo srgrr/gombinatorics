@@ -4,7 +4,7 @@ import "context"
 
 // Filter channels elements from a slice that satisfy a given criterion
 func Filter[T any](ctx context.Context, A []T, criterion func(T) bool) <-chan T {
-	ch := make(chan T)
+	ch := make(chan T, GBufferSize)
 	go func() {
 		defer close(ch)
 		for _, elem := range A {
@@ -23,7 +23,7 @@ func Filter[T any](ctx context.Context, A []T, criterion func(T) bool) <-chan T 
 
 // CFilter channels elements from a read-only channel that satisfy a given criterion
 func CFilter[T any](ctx context.Context, A <-chan T, criterion func(T) bool) <-chan T {
-	ch := make(chan T)
+	ch := make(chan T, GBufferSize)
 	go func() {
 		defer close(ch)
 		for elem := range A {

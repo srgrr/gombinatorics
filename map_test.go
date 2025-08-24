@@ -47,6 +47,7 @@ func TestMap(t *testing.T) {
 }
 
 func TestMap_CancelCtx(t *testing.T) {
+	GBufferSize = 0
 	ctx, cancel := context.WithCancel(context.Background())
 
 	defer cancel()
@@ -103,6 +104,7 @@ func TestCMap(t *testing.T) {
 }
 
 func TestCMap_CancelCtx(t *testing.T) {
+	GBufferSize = 0
 	ctx, cancel := context.WithCancel(context.Background())
 
 	defer cancel()

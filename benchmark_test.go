@@ -31,7 +31,7 @@ func BenchmarkRangeMapFilter_Gombinator(b *testing.B) {
 }
 
 func getRangeChan(l, r int) <-chan int {
-	ch := make(chan int)
+	ch := make(chan int, 64)
 	go func() {
 		defer close(ch)
 		for i := l; i < r; i++ {
@@ -42,7 +42,7 @@ func getRangeChan(l, r int) <-chan int {
 }
 
 func getMapChan(inputChan <-chan int, f func(n int) int) <-chan int {
-	ch := make(chan int)
+	ch := make(chan int, 64)
 	go func() {
 		defer close(ch)
 		for elem := range inputChan {
@@ -53,7 +53,7 @@ func getMapChan(inputChan <-chan int, f func(n int) int) <-chan int {
 }
 
 func getFilterChan(inputChan <-chan int, f func(n int) bool) <-chan int {
-	ch := make(chan int)
+	ch := make(chan int, 64)
 	go func() {
 		defer close(ch)
 		for elem := range inputChan {

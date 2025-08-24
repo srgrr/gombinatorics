@@ -9,7 +9,7 @@ import (
 // just keep making pairs until one of the two slices runs
 // out of elements
 func Zip[P any, Q any](ctx context.Context, A []P, B []Q) <-chan Pair[P, Q] {
-	ch := make(chan Pair[P, Q])
+	ch := make(chan Pair[P, Q], GBufferSize)
 	go func() {
 		defer close(ch)
 		for i := 0; i < min(len(A), len(B)); i++ {
@@ -28,7 +28,7 @@ func Zip[P any, Q any](ctx context.Context, A []P, B []Q) <-chan Pair[P, Q] {
 // just keep making pairs until one of the two sources runs
 // out of elements
 func CZip[P any, Q any](ctx context.Context, A <-chan P, B <-chan Q) <-chan Pair[P, Q] {
-	ch := make(chan Pair[P, Q])
+	ch := make(chan Pair[P, Q], GBufferSize)
 	go func() {
 		defer close(ch)
 		for {

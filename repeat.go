@@ -18,7 +18,7 @@ func Repeat[T any](ctx context.Context, elem T, k int) (<-chan T, error) {
 	if k < -1 {
 		return nil, ErrInvalidRepeatKValue
 	}
-	ch := make(chan T)
+	ch := make(chan T, GBufferSize)
 	go func() {
 		defer close(ch)
 		for i := 0; i == -1 || i < k; i++ {

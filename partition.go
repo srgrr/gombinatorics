@@ -15,7 +15,7 @@ func Partition[T any](ctx context.Context, A []T, k int) (<-chan []T, error) {
 	if k < 1 {
 		return nil, ErrInvalidPartitionKValue
 	}
-	ch := make(chan []T)
+	ch := make(chan []T, GBufferSize)
 	go func() {
 		defer close(ch)
 		for i := 0; i < len(A); i += k {
@@ -38,7 +38,7 @@ func CPartition[T any](ctx context.Context, A <-chan T, k int) (<-chan []T, erro
 	if k < 1 {
 		return nil, ErrInvalidPartitionKValue
 	}
-	ch := make(chan []T)
+	ch := make(chan []T, GBufferSize)
 	go func() {
 		defer close(ch)
 		batch := make([]T, 0, k)
