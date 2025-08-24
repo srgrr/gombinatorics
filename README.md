@@ -3,16 +3,25 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/srgrr/gombinator)](https://goreportcard.com/report/github.com/srgrr/gombinator) [![Go Reference](https://pkg.go.dev/badge/github.com/srgrr/gombinator.svg)](https://pkg.go.dev/github.com/srgrr/gombinator) ![License](https://img.shields.io/github/license/srgrr/gombinator)
 
 
-
+```go
+evenSquaredNumbers :=
+    g.CMap(ctx, // 3. Map the even numbers to their squares
+        g.CFilter(ctx, // 2. Filter even numbers from the channel
+            g.Range(ctx, 1, 11), // 1. Channel numbers from 1 to 10
+            func(n int) bool { return n%2 == 0 },
+        ),
+        func(n int) int { return n * n },
+    )
+```
 
 A goroutine-friendly functional library. It features methods like `map`, `filter`, etc for slices and channels but by *generating* the results on demand.
 
 # How to use it
-This library can be installed and imported as a dependency by doing the usually `go get` stuff...
+## Installation
 ```
 go get github.com/srgrr/gombinator
 ```
-... and import it the same way
+## Importing gombinator
 ```go
 import g "github.com/srgrr/gombinator"
 ```
