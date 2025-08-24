@@ -11,7 +11,8 @@ func Map[S any, T any](ctx context.Context, A []S, f func(S) T) <-chan T {
 			select {
 			case <-ctx.Done():
 				return
-			case ch <- f(elem):
+			default:
+				ch <- f(elem)
 			}
 		}
 	}()
@@ -27,7 +28,8 @@ func CMap[S any, T any](ctx context.Context, A <-chan S, f func(S) T) <-chan T {
 			select {
 			case <-ctx.Done():
 				return
-			case ch <- f(elem):
+			default:
+				ch <- f(elem)
 			}
 		}
 	}()

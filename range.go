@@ -12,7 +12,8 @@ func Range(ctx context.Context, l, r int) <-chan int {
 			select {
 			case <-ctx.Done():
 				return
-			case ch <- i:
+			default:
+				ch <- i
 			}
 		}
 	}()

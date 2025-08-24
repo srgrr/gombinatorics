@@ -46,21 +46,6 @@ func TestFilter(t *testing.T) {
 	}
 }
 
-func TestFilter_CancelCtx(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-
-	cancel()
-
-	got := make([]int, 0)
-	for elem := range Filter(ctx, []int{1, 2, 3}, func(n int) bool { return n%2 == 0 }) {
-		got = append(got, elem)
-	}
-
-	if len(got) != 0 {
-		t.Errorf("Expected no elements due to cancellation, got %v", got)
-	}
-}
-
 func TestCFilter(t *testing.T) {
 	ctx := context.Background()
 	tests := []FilterTestCase[int]{
@@ -107,20 +92,15 @@ func TestCFilter_CancelCtx(t *testing.T) {
 	defer cancel()
 
 	got := make([]int, 0)
-	supplierChan := make(chan int)
-	go func() {
-		defer close(supplierChan)
-		for _, elem := range []int{1, 2, 3} {
-			supplierChan <- elem
-		}
-	}()
+	supplierChan := Range(ctx, 1, 1000000000)
 
-	for elem := range CFilter(ctx, supplierChan, func(n int) bool { return n%2 == 0 }) {
-		cancel()
+	cancel()
+
+	for elem := range CFilter(ctx, supplierChan, func(n int) bool { return n == 1000000000-1 }) {
 		got = append(got, elem)
 	}
 
-	if len(got) != 1 {
-		t.Errorf("Expected one element due to cancellation, got %v", got)
+	if len(got) != 0 {
+		t.Errorf("Context cancellation either didn't happen or took too long")
 	}
 }

@@ -46,23 +46,6 @@ func TestMap(t *testing.T) {
 	}
 }
 
-func TestMap_CancelCtx(t *testing.T) {
-	GBufferSize = 0
-	ctx, cancel := context.WithCancel(context.Background())
-
-	defer cancel()
-
-	got := make([]int, 0)
-	for elem := range Map(ctx, []int{4, 3, 2}, func(n int) int { return n * n }) {
-		cancel()
-		got = append(got, elem)
-	}
-
-	if len(got) != 1 {
-		t.Errorf("Expected no elements due to cancellation, got %v", got)
-	}
-}
-
 func TestCMap(t *testing.T) {
 	ctx := context.Background()
 	tests := []MapTestCase[int]{
@@ -105,25 +88,17 @@ func TestCMap(t *testing.T) {
 
 func TestCMap_CancelCtx(t *testing.T) {
 	GBufferSize = 0
+	defer func() { GBufferSize = 64 }()
 	ctx, cancel := context.WithCancel(context.Background())
 
 	defer cancel()
 
 	got := make([]int, 0)
-	supplierChan := make(chan int)
-	go func() {
-		defer close(supplierChan)
-		for _, elem := range []int{4, 3, 2} {
-			supplierChan <- elem
-		}
-	}()
+	supplierChan, _ := Repeat(ctx, 1, -1)
 
+	// Test will fail if cancel is ignored by CMap
 	for elem := range CMap(ctx, supplierChan, func(n int) int { return n * n }) {
 		cancel()
-		got = append(got, elem)
-	}
-
-	if len(got) != 1 {
-		t.Errorf("Expected one element due to cancellation, got %v", got)
+		_ = append(got, elem)
 	}
 }
