@@ -7,6 +7,7 @@ import (
 
 var LIMIT = 10000000
 var MOD int = 1e9 + 7
+var TARGET int = 3691500
 
 func BenchmarkRangeMapFilter_Gombinator(b *testing.B) {
 	b.ReportAllocs()
@@ -26,7 +27,9 @@ func BenchmarkRangeMapFilter_Gombinator(b *testing.B) {
 		for elem := range squaredEvenNumbers {
 			total = (total + elem) % MOD
 		}
-		_ = total
+		if total != TARGET {
+			b.Errorf("Benchmark doesn't compute the right value")
+		}
 	}
 }
 
@@ -82,7 +85,9 @@ func BenchmarkRangeMapFilter_Vanilla(b *testing.B) {
 		for elem := range squaredEvenNumbers {
 			total = (total + elem) % MOD
 		}
-		_ = total
+		if total != TARGET {
+			b.Errorf("Benchmark doesn't compute the right value")
+		}
 	}
 }
 
@@ -154,7 +159,9 @@ func BenchmarkRangeMapFilter_VanillaContext(b *testing.B) {
 		for elem := range squaredEvenNumbers {
 			total = (total + elem) % MOD
 		}
-		_ = total
+		if total != TARGET {
+			b.Errorf("Benchmark doesn't compute the right value")
+		}
 	}
 }
 
@@ -168,6 +175,8 @@ func Benchmark_Sequential(b *testing.B) {
 				total = (total + i*i) % MOD
 			}
 		}
-		_ = total
+		if total != TARGET {
+			b.Errorf("Benchmark doesn't compute the right value")
+		}
 	}
 }
