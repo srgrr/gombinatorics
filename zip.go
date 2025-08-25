@@ -16,7 +16,8 @@ func Zip[P any, Q any](ctx context.Context, A []P, B []Q) <-chan Pair[P, Q] {
 			select {
 			case <-ctx.Done():
 				return
-			case ch <- Pair[P, Q]{First: A[i], Second: B[i]}:
+			default:
+				ch <- Pair[P, Q]{First: A[i], Second: B[i]}
 			}
 		}
 	}()
@@ -39,7 +40,8 @@ func CZip[P any, Q any](ctx context.Context, A <-chan P, B <-chan Q) <-chan Pair
 			select {
 			case <-ctx.Done():
 				return
-			case a, okA = <-A:
+			default:
+				a, okA = <-A
 				if !okA {
 					return
 				}
@@ -48,7 +50,8 @@ func CZip[P any, Q any](ctx context.Context, A <-chan P, B <-chan Q) <-chan Pair
 			select {
 			case <-ctx.Done():
 				return
-			case b, okB = <-B:
+			default:
+				b, okB = <-B
 				if !okB {
 					return
 				}
@@ -57,7 +60,8 @@ func CZip[P any, Q any](ctx context.Context, A <-chan P, B <-chan Q) <-chan Pair
 			select {
 			case <-ctx.Done():
 				return
-			case ch <- Pair[P, Q]{First: a, Second: b}:
+			default:
+				ch <- Pair[P, Q]{First: a, Second: b}
 			}
 		}
 	}()
