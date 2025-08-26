@@ -21,7 +21,7 @@ func Repeat[T any](ctx context.Context, elem T, k int) (<-chan T, error) {
 	ch := make(chan T, GBufferSize)
 	go func() {
 		defer close(ch)
-		for i := 0; i == -1 || i < k; i++ {
+		for i := 0; k == -1 || i < k; i++ {
 			select {
 			case <-ctx.Done():
 				return
