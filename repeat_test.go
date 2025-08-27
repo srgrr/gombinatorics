@@ -11,7 +11,7 @@ type RepeatTestCase struct {
 	k    int
 }
 
-func TestRepeat_Finite(t *testing.T) {
+func TestERepeat_Finite(t *testing.T) {
 	ctx := context.Background()
 	testCases := []RepeatTestCase{
 		{"k=1", 1},
@@ -23,7 +23,7 @@ func TestRepeat_Finite(t *testing.T) {
 			testCase.name,
 			func(t *testing.T) {
 				total := 0
-				repeatChan, _ := Repeat(ctx, 1, testCase.k)
+				repeatChan, _ := ERepeat(ctx, 1, testCase.k)
 				for range repeatChan {
 					total++
 				}
@@ -38,7 +38,7 @@ func TestRepeat_Finite(t *testing.T) {
 func TestRepeat_Infinite(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	repeatChan, _ := Repeat(ctx, 1, -1)
+	repeatChan, _ := ERepeat(ctx, 1, -1)
 	cancel()
 	total := 0
 	for range repeatChan {
@@ -47,7 +47,7 @@ func TestRepeat_Infinite(t *testing.T) {
 	fmt.Println(total)
 }
 
-func TestRepeat_Error(t *testing.T) {
+func TestERepeat_Error(t *testing.T) {
 	ctx := context.Background()
 	testCases := []RepeatTestCase{
 		{"k=0", -3},
@@ -56,7 +56,7 @@ func TestRepeat_Error(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name,
 			func(t *testing.T) {
-				_, err := Repeat(ctx, 1, testCase.k)
+				_, err := ERepeat(ctx, 1, testCase.k)
 				if err == nil {
 					t.Errorf("Expected error")
 				}

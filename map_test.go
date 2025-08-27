@@ -94,7 +94,7 @@ func TestCMap_CancelCtx(t *testing.T) {
 	defer cancel()
 
 	got := make([]int, 0)
-	supplierChan, _ := Repeat(ctx, 1, -1)
+	supplierChan := Repeat(ctx, 1, -1)
 
 	// Test will fail if cancel is ignored by CMap
 	for elem := range CMap(ctx, supplierChan, func(n int) int { return n * n }) {
