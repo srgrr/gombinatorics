@@ -11,6 +11,11 @@ import "context"
 // Buffer size for channels
 var GBufferSize = 64
 
+// Channelize channels the elements of a slice
+func Channelize[T any](ctx context.Context, A []T) <-chan T {
+	return Map(ctx, A, func(a T) T { return a })
+}
+
 // Filter channels elements from a slice that satisfy a given criterion
 func Filter[T any](ctx context.Context, A []T, criterion func(T) bool) <-chan T {
 	ch := make(chan T, GBufferSize)
