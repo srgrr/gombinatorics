@@ -7,11 +7,32 @@ import (
 	"testing"
 )
 
+var BENCHMARK_LIMIT = 10000000
+var BENCHMARK_MOD int = 1e9 + 7
+var BENCHMARK_TARGET int = 3691500
+
 type FilterTestCase[T any] struct {
 	name      string
 	A         []T
 	criterion func(T) bool
 	expected  []T
+}
+
+type MapTestCase[T any] struct {
+	name     string
+	A        []T
+	mapFunc  func(T) T
+	expected []T
+}
+
+type PartitionWrongKValuesTestCase struct {
+	name string
+	k    int
+}
+
+type RepeatTestCase struct {
+	name string
+	k    int
 }
 
 func TestFilter(t *testing.T) {
@@ -104,13 +125,6 @@ func TestCFilter_CancelCtx(t *testing.T) {
 	if len(got) != 0 {
 		t.Errorf("Context cancellation either didn't happen or took too long")
 	}
-}
-
-type MapTestCase[T any] struct {
-	name     string
-	A        []T
-	mapFunc  func(T) T
-	expected []T
 }
 
 func TestMap(t *testing.T) {
@@ -224,11 +238,6 @@ func TestPartition(t *testing.T) {
 	}
 }
 
-type PartitionWrongKValuesTestCase struct {
-	name string
-	k    int
-}
-
 func TestPartition_WrongKValues(t *testing.T) {
 	ctx := context.Background()
 	testCases := []PartitionWrongKValuesTestCase{
@@ -313,11 +322,6 @@ func TestRange(t *testing.T) {
 	if total != 10*11/2 {
 		t.Errorf("Range didn't produce the right values")
 	}
-}
-
-type RepeatTestCase struct {
-	name string
-	k    int
 }
 
 func TestERepeat_Finite(t *testing.T) {
@@ -415,5 +419,179 @@ func TestCZip(t *testing.T) {
 
 	if !reflect.DeepEqual(expected, zippedPairs) {
 		t.Errorf("Error:\nGot\t%+v\nExpected\t%+v", zippedPairs, expected)
+	}
+}
+
+// Benchmarks
+
+func BenchmarkRangeMapFilter_Gombinator(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(1)
+	for n := 0; n < b.N; n++ {
+		var total int = 0
+		ctx := context.Background()
+		squaredEvenNumbers :=
+			CMap(ctx,
+				CFilter(ctx,
+					Range(ctx, 0, BENCHMARK_LIMIT),
+					func(n int) bool { return n%2 == 0 },
+				),
+				func(n int) int { return n * n },
+			)
+		// Consume the channel for benchmarking
+		for elem := range squaredEvenNumbers {
+			total = (total + elem) % BENCHMARK_MOD
+		}
+		if total != BENCHMARK_TARGET {
+			b.Errorf("Benchmark doesn't compute the right value")
+		}
+	}
+}
+
+func getRangeChan(l, r int) <-chan int {
+	ch := make(chan int, 64)
+	go func() {
+		defer close(ch)
+		for i := l; i < r; i++ {
+			ch <- i
+		}
+	}()
+	return ch
+}
+
+func getMapChan(inputChan <-chan int, f func(n int) int) <-chan int {
+	ch := make(chan int, 64)
+	go func() {
+		defer close(ch)
+		for elem := range inputChan {
+			ch <- f(elem)
+		}
+	}()
+	return ch
+}
+
+func getFilterChan(inputChan <-chan int, f func(n int) bool) <-chan int {
+	ch := make(chan int, 64)
+	go func() {
+		defer close(ch)
+		for elem := range inputChan {
+			if f(elem) {
+				ch <- elem
+			}
+		}
+	}()
+	return ch
+}
+
+func BenchmarkRangeMapFilter_Vanilla(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(1)
+	for n := 0; n < b.N; n++ {
+		var total int = 0
+		squaredEvenNumbers :=
+			getMapChan(
+				getFilterChan(
+					getRangeChan(0, BENCHMARK_LIMIT),
+					func(n int) bool { return n%2 == 0 },
+				),
+				func(n int) int { return n * n },
+			)
+		// Consume the channel for benchmarking
+		for elem := range squaredEvenNumbers {
+			total = (total + elem) % BENCHMARK_MOD
+		}
+		if total != BENCHMARK_TARGET {
+			b.Errorf("Benchmark doesn't compute the right value")
+		}
+	}
+}
+
+func getRangeChanCtx(ctx context.Context, l, r int) <-chan int {
+	ch := make(chan int, 64)
+	go func() {
+		defer close(ch)
+		for i := l; i < r; i++ {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				ch <- i
+			}
+		}
+	}()
+	return ch
+}
+
+func getMapChanCtx(ctx context.Context, inputChan <-chan int, f func(n int) int) <-chan int {
+	ch := make(chan int, 64)
+	go func() {
+		defer close(ch)
+		for elem := range inputChan {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				ch <- f(elem)
+			}
+		}
+	}()
+	return ch
+}
+
+func getFilterChanCtx(ctx context.Context, inputChan <-chan int, f func(n int) bool) <-chan int {
+	ch := make(chan int, 64)
+	go func() {
+		defer close(ch)
+		for elem := range inputChan {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				if f(elem) {
+					ch <- elem
+				}
+			}
+		}
+	}()
+	return ch
+}
+
+func BenchmarkRangeMapFilter_VanillaContext(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(1)
+	ctx := context.Background()
+	for n := 0; n < b.N; n++ {
+		var total int = 0
+		squaredEvenNumbers :=
+			getMapChanCtx(ctx,
+				getFilterChanCtx(ctx,
+					getRangeChanCtx(ctx, 0, BENCHMARK_LIMIT),
+					func(n int) bool { return n%2 == 0 },
+				),
+				func(n int) int { return n * n },
+			)
+		// Consume the channel for benchmarking
+		for elem := range squaredEvenNumbers {
+			total = (total + elem) % BENCHMARK_MOD
+		}
+		if total != BENCHMARK_TARGET {
+			b.Errorf("Benchmark doesn't compute the right value")
+		}
+	}
+}
+
+func Benchmark_Sequential(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(1)
+	for n := 0; n < b.N; n++ {
+		total := 0
+		for i := 0; i < BENCHMARK_LIMIT; i++ {
+			if i%2 == 0 {
+				total = (total + i*i) % BENCHMARK_MOD
+			}
+		}
+		if total != BENCHMARK_TARGET {
+			b.Errorf("Benchmark doesn't compute the right value")
+		}
 	}
 }
