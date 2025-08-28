@@ -1,4 +1,4 @@
-# Gombinator v1.1.1
+# Gombinator 1.1.2
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/srgrr/gombinator)](https://goreportcard.com/report/github.com/srgrr/gombinator) [![Go Reference](https://pkg.go.dev/badge/github.com/srgrr/gombinator.svg)](https://pkg.go.dev/github.com/srgrr/gombinator) ![License](https://img.shields.io/github/license/srgrr/gombinator)
 
