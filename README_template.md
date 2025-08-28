@@ -57,7 +57,7 @@ This means two things:
 
 # Performance
 
-As we mentioned before, `gombinator` does take a toll on performance due to the heavy use of channels. You can check it out by yourself by running `benchmark_test.go`. Here are some results:
+As we mentioned before, `gombinator` does take a toll on performance due to the heavy use of channels. You can check it out by yourself by running them. Here are some results:
 
 ```
 goos: darwin
