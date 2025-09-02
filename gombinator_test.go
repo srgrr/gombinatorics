@@ -217,12 +217,12 @@ func TestCMap_CancelCtx(t *testing.T) {
 	}
 }
 
-func TestPartition(t *testing.T) {
+func TestEPartition(t *testing.T) {
 	ctx := context.Background()
 	strings := []string{"the", "quick", "brown", "fox", "jumps", "over", "the"}
 	received := make([][]string, 0)
 
-	partitionChannel, _ := Partition(ctx, strings, 2)
+	partitionChannel, _ := EPartition(ctx, strings, 2)
 
 	for partition := range partitionChannel {
 		received = append(received, partition)
@@ -238,7 +238,7 @@ func TestPartition(t *testing.T) {
 	}
 }
 
-func TestPartition_WrongKValues(t *testing.T) {
+func TestEPartition_WrongKValues(t *testing.T) {
 	ctx := context.Background()
 	testCases := []PartitionWrongKValuesTestCase{
 		{"k = 0", 0},
@@ -251,7 +251,7 @@ func TestPartition_WrongKValues(t *testing.T) {
 			testCase.name,
 			func(t *testing.T) {
 				strings := []string{"the", "quick", "brown", "fox", "jumps", "over", "the"}
-				_, err := Partition(ctx, strings, testCase.k)
+				_, err := EPartition(ctx, strings, testCase.k)
 				if err == nil || err != ErrInvalidPartitionKValue {
 					t.Errorf("Expected ErrInvalidPartitionKValue, received %+v instead", err)
 				}
@@ -260,7 +260,7 @@ func TestPartition_WrongKValues(t *testing.T) {
 	}
 }
 
-func TestCPartition(t *testing.T) {
+func TestECPartition(t *testing.T) {
 	ctx := context.Background()
 	strings := []string{"the", "quick", "brown", "fox", "jumps", "over", "the"}
 	received := make([][]string, 0)
@@ -273,7 +273,7 @@ func TestCPartition(t *testing.T) {
 		}
 	}()
 
-	partitionChannel, _ := Partition(ctx, strings, 2)
+	partitionChannel, _ := ECPartition(ctx, supplierChannel, 2)
 
 	for partition := range partitionChannel {
 		received = append(received, partition)
@@ -304,7 +304,7 @@ func TestCPartition_WrongKValues(t *testing.T) {
 			func(t *testing.T) {
 				ch := make(chan string)
 				defer close(ch)
-				_, err := CPartition(ctx, ch, testCase.k)
+				_, err := ECPartition(ctx, ch, testCase.k)
 				if err == nil || err != ErrInvalidPartitionKValue {
 					t.Errorf("Expected ErrInvalidPartitionKValue, received %+v instead", err)
 				}

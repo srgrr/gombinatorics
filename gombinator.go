@@ -88,11 +88,11 @@ func CMap[S any, T any](ctx context.Context, A <-chan S, f func(S) T) <-chan T {
 	return ch
 }
 
-// Partition channels consecutive array slices of size k
+// EPartition channels consecutive array slices of size k
 // except for maybe the last, which can be of size n % k
 // Zero and negative numbers are not accepted here
 // Returns ErrInvalidKValue if k is not at least 1
-func Partition[T any](ctx context.Context, A []T, k int) (<-chan []T, error) {
+func EPartition[T any](ctx context.Context, A []T, k int) (<-chan []T, error) {
 	if k < 1 {
 		return nil, ErrInvalidPartitionKValue
 	}
@@ -110,12 +110,24 @@ func Partition[T any](ctx context.Context, A []T, k int) (<-chan []T, error) {
 	return ch, nil
 }
 
-// CPartition channels consecutive slices of size k from a read-only channel
+// Partition channels consecutive array slices of size k
+// except for maybe the last, which can be of size n % k
+// Zero and negative numbers are not accepted here
+// Unlike EPartition, Partition will just panic if k is not valid
+func Partition[T any](ctx context.Context, A []T, k int) <-chan []T {
+	ret, err := EPartition(ctx, A, k)
+	if err != nil {
+		panic(err)
+	}
+	return ret
+}
+
+// ECPartition channels consecutive slices of size k from a read-only channel
 // except for maybe the last, which can be of size n % k
 // Zero and negative numbers are not accepted here
 // It is similar to Partition but works with channels instead of arrays
 // Returns ErrInvalidKValue if k is not at least 1
-func CPartition[T any](ctx context.Context, A <-chan T, k int) (<-chan []T, error) {
+func ECPartition[T any](ctx context.Context, A <-chan T, k int) (<-chan []T, error) {
 	if k < 1 {
 		return nil, ErrInvalidPartitionKValue
 	}
@@ -140,6 +152,19 @@ func CPartition[T any](ctx context.Context, A <-chan T, k int) (<-chan []T, erro
 		}
 	}()
 	return ch, nil
+}
+
+// CPartition channels consecutive slices of size k from a read-only channel
+// except for maybe the last, which can be of size n % k
+// Zero and negative numbers are not accepted here
+// It is similar to Partition but works with channels instead of arrays
+// Unlike ECPartition, it won't return any error but panic if k is not valid
+func CPartition[T any](ctx context.Context, A <-chan T, k int) <-chan []T {
+	ret, err := ECPartition(ctx, A, k)
+	if err != nil {
+		panic(err)
+	}
+	return ret
 }
 
 // Range channels integers in [l, r), excluding r
