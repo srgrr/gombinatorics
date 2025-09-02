@@ -80,6 +80,8 @@ All functions require the user to provide a `context.Context` object. This allow
 
 There are two kinds of functions: normal functions and Cfunctions. Both **channel** their results and compute stuff **lazily**.
 
+Some of these functions also have their E version, meaning that they will return whatever they're supposed to return and some `error` in case something goes wrong (e.g. wrong configuration).
+
 Cfunctions also work with **channels**. As you've seen in the sample, this means that you can chain different functions to perform complex lazy computations.
 
 `gombinator` also allows to tune channel buffering (only for channels within the library itself) via the parameter `GBufferSize`.
@@ -96,7 +98,7 @@ This means two things:
 
 # Performance
 
-As we mentioned before, `gombinator` does take a toll on performance due to the heavy use of channels. You can check it out by yourself by running `benchmark_test.go`. Here are some results:
+As we mentioned before, `gombinator` does take a toll on performance due to the heavy use of channels. You can check it out by yourself by running them. Here are some results:
 
 ```
 goos: darwin
