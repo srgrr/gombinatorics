@@ -3,6 +3,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/srgrr/gombinator)](https://goreportcard.com/report/github.com/srgrr/gombinator) [![Go Reference](https://pkg.go.dev/badge/github.com/srgrr/gombinator.svg)](https://pkg.go.dev/github.com/srgrr/gombinator) ![License](https://img.shields.io/github/license/srgrr/gombinator)
 
 
+A goroutine-friendly functional library. It features methods like `map`, `filter`, etc for slices and channels but by *generating* the results on demand.
+
 ```go
 evenSquaredNumbers := CMap(ctx,
     CFilter(ctx,
@@ -12,8 +14,6 @@ evenSquaredNumbers := CMap(ctx,
     func(n int) int { return n * n },
 )
 ```
-
-A goroutine-friendly functional library. It features methods like `map`, `filter`, etc for slices and channels but by *generating* the results on demand.
 
 # How to use it
 ## Installation
