@@ -1,7 +1,0 @@
-evenSquaredNumbers := CMap(ctx,
-    CFilter(ctx,
-        Range(ctx, 1, 11),
-        func(n int) bool { return n%2 == 0 },
-    ),
-    func(n int) int { return n * n },
-)
