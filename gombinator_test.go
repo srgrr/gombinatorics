@@ -7,10 +7,6 @@ import (
 	"testing"
 )
 
-var BENCHMARK_LIMIT = 10000000
-var BENCHMARK_MOD int = 1e9 + 7
-var BENCHMARK_TARGET int = 3691500
-
 type FilterTestCase[T any] struct {
 	name      string
 	A         []T
@@ -238,6 +234,27 @@ func TestEPartition(t *testing.T) {
 	}
 }
 
+func TestPartition(t *testing.T) {
+	ctx := context.Background()
+	strings := []string{"the", "quick", "brown", "fox", "jumps", "over", "the"}
+	received := make([][]string, 0)
+
+	partitionChannel := Partition(ctx, strings, 2)
+
+	for partition := range partitionChannel {
+		received = append(received, partition)
+	}
+	expected := [][]string{
+		{"the", "quick"},
+		{"brown", "fox"},
+		{"jumps", "over"},
+		{"the"},
+	}
+	if !reflect.DeepEqual(expected, received) {
+		t.Errorf("Expected %s\nReceived %s", expected, received)
+	}
+}
+
 func TestEPartition_WrongKValues(t *testing.T) {
 	ctx := context.Background()
 	testCases := []PartitionWrongKValuesTestCase{
@@ -274,6 +291,36 @@ func TestECPartition(t *testing.T) {
 	}()
 
 	partitionChannel, _ := ECPartition(ctx, supplierChannel, 2)
+
+	for partition := range partitionChannel {
+		received = append(received, partition)
+	}
+
+	expected := [][]string{
+		{"the", "quick"},
+		{"brown", "fox"},
+		{"jumps", "over"},
+		{"the"},
+	}
+	if !reflect.DeepEqual(expected, received) {
+		t.Errorf("Expected %s\nReceived %s", expected, received)
+	}
+}
+
+func TestCPartition(t *testing.T) {
+	ctx := context.Background()
+	strings := []string{"the", "quick", "brown", "fox", "jumps", "over", "the"}
+	received := make([][]string, 0)
+
+	supplierChannel := make(chan string)
+	go func() {
+		defer close(supplierChannel)
+		for _, str := range strings {
+			supplierChannel <- str
+		}
+	}()
+
+	partitionChannel := CPartition(ctx, supplierChannel, 2)
 
 	for partition := range partitionChannel {
 		received = append(received, partition)
@@ -423,6 +470,9 @@ func TestCZip(t *testing.T) {
 }
 
 // Benchmarks
+var BENCHMARK_LIMIT = 10000000
+var BENCHMARK_MOD int = 1e9 + 7
+var BENCHMARK_TARGET int = 3691500
 
 func BenchmarkRangeMapFilter_Gombinator(b *testing.B) {
 	b.ReportAllocs()
