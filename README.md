@@ -16,10 +16,12 @@ evenSquaredNumbers := CMap(ctx,
 ```
 
 # How to use it
+
 ## Installation
 ```
 go get github.com/srgrr/gombinator
 ```
+
 ## Importing gombinator
 ```go
 import g "github.com/srgrr/gombinator"
