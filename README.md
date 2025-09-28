@@ -1,4 +1,4 @@
-# Gombinator v1.1.3
+# Gombinator v1.2.2
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/srgrr/gombinator)](https://goreportcard.com/report/github.com/srgrr/gombinator) [![Go Reference](https://pkg.go.dev/badge/github.com/srgrr/gombinator.svg)](https://pkg.go.dev/github.com/srgrr/gombinator) ![License](https://img.shields.io/github/license/srgrr/gombinator)
 
@@ -16,10 +16,12 @@ evenSquaredNumbers := CMap(ctx,
 ```
 
 # How to use it
+
 ## Installation
 ```
 go get github.com/srgrr/gombinator
 ```
+
 ## Importing gombinator
 ```go
 import g "github.com/srgrr/gombinator"
