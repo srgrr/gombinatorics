@@ -215,7 +215,7 @@ func TestCMap_CancelCtx(t *testing.T) {
 
 func TestEPartition(t *testing.T) {
 	ctx := context.Background()
-	strings := []string{"the", "quick", "brown", "fox", "jumps", "over", "the"}
+	strings := []string{"the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"}
 	received := make([][]string, 0)
 
 	partitionChannel, _ := EPartition(ctx, strings, 2)
@@ -227,7 +227,8 @@ func TestEPartition(t *testing.T) {
 		{"the", "quick"},
 		{"brown", "fox"},
 		{"jumps", "over"},
-		{"the"},
+		{"the", "lazy"},
+		{"dog"},
 	}
 	if !reflect.DeepEqual(expected, received) {
 		t.Errorf("Expected %s\nReceived %s", expected, received)
@@ -236,7 +237,7 @@ func TestEPartition(t *testing.T) {
 
 func TestPartition(t *testing.T) {
 	ctx := context.Background()
-	strings := []string{"the", "quick", "brown", "fox", "jumps", "over", "the"}
+	strings := []string{"the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"}
 	received := make([][]string, 0)
 
 	partitionChannel := Partition(ctx, strings, 2)
@@ -248,7 +249,8 @@ func TestPartition(t *testing.T) {
 		{"the", "quick"},
 		{"brown", "fox"},
 		{"jumps", "over"},
-		{"the"},
+		{"the", "lazy"},
+		{"dog"},
 	}
 	if !reflect.DeepEqual(expected, received) {
 		t.Errorf("Expected %s\nReceived %s", expected, received)
